@@ -1,0 +1,27 @@
+{
+    "name": "cs278/date-time-objects",
+    "description": "Date and time data objects.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Smith",
+            "email": "chris@cs278.org"
+        }
+    ],
+    "require": {
+        "php": ">= 5.4"
+    },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "^1.10",
+        "phpunit/phpunit": "^4.8"
+    },
+    "scripts": {
+        "cs": "php-cs-fixer fix"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cs278\\DateTimeObjects\\": "src"
+        }
+    }
+}
