@@ -81,6 +81,27 @@ final class DateTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    public function testConstructWithPreGregorianYear()
+    {
+        $date = @new Date(1523, 1, 1);
+        $error = error_get_last();
+
+        $this->assertSame('1523-01-01', (string) $date);
+
+        $this->assertArraySubset([
+            'type' => E_USER_NOTICE,
+            'message' => 'Date outside gregorian calendar range.',
+        ], $error);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructWithInvalidDate()
+    {
+        new Date(2012, 2, 30);
+    }
+
     public function testConstruct()
     {
         $date = new Date(1988, 12, 25);
