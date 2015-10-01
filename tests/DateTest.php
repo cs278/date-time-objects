@@ -121,6 +121,21 @@ final class DateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(360, $date->getDayOfYear());
     }
 
+    public function testGetDayOfYearLastDay()
+    {
+        $this->assertSame(
+            365,
+            (new Date(2013, 12, 31))->getDayOfYear(),
+            'Non leap year should have 365 days'
+        );
+
+        $this->assertSame(
+            366,
+            (new Date(2012, 12, 31))->getDayOfYear(),
+            'Leap year should have 366 days'
+        );
+    }
+
     /** @depends testConstruct */
     public function testToString(Date $date)
     {
