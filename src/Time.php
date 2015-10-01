@@ -39,12 +39,12 @@ final class Time
         $this->fraction = $fraction;
     }
 
-    public function createMidnight()
+    public static function createMidnight()
     {
         return new self;
     }
 
-    public function createEndOfDay()
+    public static function createEndOfDay()
     {
         return new self(23, 59, 59);
     }
