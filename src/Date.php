@@ -64,8 +64,14 @@ final class Date
         $this->dayOfYear = ((int) $this->toDateTime()->format('z')) + 1;
     }
 
-    public static function createFromDateTime(\DateTimeInterface $dt)
+    public static function createFromDateTime($dt)
     {
+        if (interface_exists('DateTimeInterface')) {
+            Assert::isInstanceOf($dt, 'DateTimeInterface');
+        } else {
+            Assert::isInstanceOf($dt, 'DateTime');
+        }
+
         return self::createFromString($dt->format('Y-m-d'));
     }
 
@@ -107,7 +113,7 @@ final class Date
     private function toDateTime()
     {
         // @todo Probably a bad idea, a day is actually a date period.
-        return new \DateTimeImmutable((string) $this, new \DateTimeZone('UTC'));
+        return new \DateTime((string) $this, new \DateTimeZone('UTC'));
     }
 
     public function __toString()
