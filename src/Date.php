@@ -11,7 +11,7 @@
 
 namespace Cs278\DateTimeObjects;
 
-use Assert\Assertion;
+use Webmozart\Assert\Assert;
 
 final class Date
 {
@@ -41,13 +41,13 @@ final class Date
      */
     public function __construct($year, $month, $day)
     {
-        Assertion::integer($year);
-        Assertion::integer($month);
-        Assertion::integer($day);
+        Assert::integer($year);
+        Assert::integer($month);
+        Assert::integer($day);
 
-        Assertion::range($year, 0, 9999);
-        Assertion::range($month, 1, 12);
-        Assertion::range($day, 1, 31);
+        Assert::range($year, 0, 9999);
+        Assert::range($month, 1, 12);
+        Assert::range($day, 1, 31);
 
         if (!checkdate($month, $day, $year)) {
             throw new \InvalidArgumentException;
@@ -71,7 +71,7 @@ final class Date
 
     public static function createFromString($iso8601str)
     {
-        Assertion::regex($iso8601str, '{^[0-9]{1,4}-(?:0?[1-9]|1[0-2])-(?:0?[1-9]|[12][0-9]|3[01])$}');
+        Assert::regex($iso8601str, '{^[0-9]{1,4}-(?:0?[1-9]|1[0-2])-(?:0?[1-9]|[12][0-9]|3[01])$}');
 
         // @todo Handle garbage
         list($year, $month, $day) = explode('-', $iso8601str, 3);

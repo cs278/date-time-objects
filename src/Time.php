@@ -11,7 +11,7 @@
 
 namespace Cs278\DateTimeObjects;
 
-use Assert\Assertion;
+use Webmozart\Assert\Assert;
 
 final class Time
 {
@@ -23,15 +23,15 @@ final class Time
 
     public function __construct($hour = 0, $minute = 0, $second = 0, $fraction = 0)
     {
-        Assertion::integer($hour);
-        Assertion::integer($minute);
-        Assertion::integer($second);
-        Assertion::integer($fraction);
+        Assert::integer($hour);
+        Assert::integer($minute);
+        Assert::integer($second);
+        Assert::integer($fraction);
 
-        Assertion::range($hour, 0, 24);
-        Assertion::range($minute, 0, 59);
-        Assertion::range($second, 0, 60);
-        Assertion::min($fraction, 0);
+        Assert::range($hour, 0, 24);
+        Assert::range($minute, 0, 59);
+        Assert::range($second, 0, 60);
+        Assert::greaterThanEq($fraction, 0);
 
         $this->hour = $hour;
         $this->minute = $minute;
@@ -51,7 +51,7 @@ final class Time
 
     public static function createFromString($iso8601str)
     {
-        Assertion::regex($iso8601str,
+        Assert::regex($iso8601str,
             // Start
             '{^'
             // Hour (0-24, required)
