@@ -81,17 +81,41 @@ final class DateTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testConstructWithPreGregorianYear()
+    /**
+     * @dataProvider dataConstructWithPreGregorianYear
+     */
+    public function testConstructWithPreGregorianYear($year)
     {
-        $date = @new Date(1523, 1, 1);
+        error_clear_last();
+
+        $expected = sprintf('%04d-01-01', $year);
+        $date = @new Date($year, 1, 1);
         $error = error_get_last();
 
-        $this->assertSame('1523-01-01', (string) $date);
+        $this->assertSame($expected, (string) $date);
 
         $this->assertArraySubset([
             'type' => E_USER_NOTICE,
-            'message' => 'Date outside gregorian calendar range.',
+            'message' => sprintf('Date, `%s`, is outside the gregorian calendar range.', $expected),
         ], $error);
+    }
+
+    public function dataConstructWithPreGregorianYear()
+    {
+        return [
+            [0],
+            [1],
+            [1580],
+            [1581],
+            [1582],
+        ];
+    }
+
+    public function testConstructWithYear0000()
+    {
+        $this->assertSame('0000-01-01', (string) @new Date(0000, 1, 1));
+        $this->assertSame('0000-02-28', (string) @new Date(0000, 2, 28));
+        $this->assertSame('0000-02-29', (string) @new Date(0000, 2, 29));
     }
 
     /**
@@ -110,6 +134,83 @@ final class DateTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Cs278\DateTimeObjects\Date', $date);
 
         return $date;
+    }
+
+    /**
+     * @dataProvider dataConstructorInvalidYears
+     */
+    public function testConstructorInvalidYears($year)
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Year should be between 0 and 9999, got: '.$year
+        );
+
+        new Date($year, 1, 1);
+    }
+
+    public function dataConstructorInvalidYears()
+    {
+        return [
+            [-500],
+            [-2],
+            [-1],
+            [10000],
+            [20000],
+            [PHP_INT_MAX],
+            [~PHP_INT_MAX],
+        ];
+    }
+
+    /**
+     * @dataProvider dataConstructorInvalidMonths
+     */
+    public function testConstructorInvalidMonths($month)
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Month should be between 1 and 12, got: '.$month
+        );
+
+        new Date(2000, $month, 1);
+    }
+
+    public function dataConstructorInvalidMonths()
+    {
+        return [
+            [0],
+            [-49],
+            [13],
+            [5435],
+            [PHP_INT_MAX],
+            [~PHP_INT_MAX],
+        ];
+    }
+
+    /**
+     * @dataProvider dataConstructorInvalidDays
+     */
+    public function testConstructorInvalidDays($day)
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Day should be between 1 and 31, got: '.$day
+        );
+
+        new Date(2000, 1, $day);
+    }
+
+    public function dataConstructorInvalidDays()
+    {
+        return [
+            [-500],
+            [-1],
+            [0],
+            [32],
+            [56],
+            [PHP_INT_MAX],
+            [~PHP_INT_MAX],
+        ];
     }
 
     /** @depends testConstruct */

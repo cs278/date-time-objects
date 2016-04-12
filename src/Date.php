@@ -48,11 +48,19 @@ final class Date
         Assert::integer($month);
         Assert::integer($day);
 
-        Assert::range($year, 0, 9999);
-        Assert::range($month, 1, 12);
-        Assert::range($day, 1, 31);
+        Assert::range($year, 0, 9999, 'Year should be between %2$u and %3$u, got: %1$d');
+        Assert::range($month, 1, 12, 'Month should be between %2$u and %3$u, got: %1$d');
+        Assert::range($day, 1, 31, 'Day should be between %2$u and %3$u, got: %1$d');
 
-        if (!checkdate($month, $day, $year)) {
+        if ($year === 0) {
+            // checkdate() does not support the year 0000 which is a leap year
+            // so pretend it's actually 0004.
+            $checkYear = 4;
+        } else {
+            $checkYear = $year;
+        }
+
+        if (!checkdate($month, $day, $checkYear)) {
             throw new \InvalidArgumentException(sprintf(
                 'Supplied date, `%04d-%02d-%02d`, is invalid',
                 $year,
@@ -61,8 +69,13 @@ final class Date
             ));
         }
 
-        if ($year >= 0 && $year <= 1582) {
-            trigger_error('Date outside gregorian calendar range.', E_USER_NOTICE);
+        if ($year <= 1582) {
+            trigger_error(sprintf(
+                'Date, `%04d-%02d-%02d`, is outside the gregorian calendar range.',
+                $year,
+                $month,
+                $day
+            ), E_USER_NOTICE);
         }
 
         $this->year = $year;
