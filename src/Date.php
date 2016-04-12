@@ -50,7 +50,12 @@ final class Date
         Assert::range($day, 1, 31);
 
         if (!checkdate($month, $day, $year)) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException(sprintf(
+                'Supplied date, `%04d-%02d-%02d`, is invalid',
+                $year,
+                $month,
+                $day
+            ));
         }
 
         if ($year >= 0 && $year <= 1582) {

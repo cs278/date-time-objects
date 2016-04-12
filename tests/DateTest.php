@@ -96,6 +96,7 @@ final class DateTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Supplied date, `2012-02-30`, is invalid
      */
     public function testConstructWithInvalidDate()
     {
