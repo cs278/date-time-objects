@@ -16,5 +16,9 @@ require __DIR__.'/../vendor/autoload.php';
  */
 function ⟷($a, $b)
 {
+    if (PHP_VERSION_ID >= 70000) {
+        return eval('return $a <=> $b;');
+    }
+
     return $a == $b ? 0 : ($a > $b ? 1 : -1);
 }
