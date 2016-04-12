@@ -169,15 +169,34 @@ final class DateTest extends \PHPUnit_Framework_TestCase
     {
         $result = ⟷($a, $b);
 
-        $this->assertSame($expected, $result);
+        switch ($expected) {
+            case 1:
+                $message = '`%s` should be greater than `%s`';
+                break;
+            case -1:
+                $message = '`%s` should be less than `%s`';
+                break;
+            case 0:
+                $message = '`%s` should be equal to `%s`';
+                break;
+
+            default:
+                $message = '';
+        }
+
+        $this->assertSame($expected, $result, sprintf($message, $a, $b));
     }
 
     public function dataComparison()
     {
         return [
+            // Simple comparison
             [1, new Date(1990, 4, 16), new Date(1990, 4, 15)],
             [0, new Date(1990, 4, 15), new Date(1990, 4, 15)],
             [-1, new Date(1990, 4, 14), new Date(1990, 4, 15)],
+            // Ensure property order is correct
+            [1, new Date(3000, 1, 1), new Date(2000, 12, 31)],
+            [1, new Date(3000, 12, 1), new Date(2000, 1, 31)],
         ];
     }
 }
