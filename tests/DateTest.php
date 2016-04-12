@@ -131,9 +131,9 @@ final class DateTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @depends testConstruct */
-    public function testGetDayOfWeek(Date $date)
+    public function testGetWeekDay(Date $date)
     {
-        $this->assertSame(WeekDay::SUN, $date->getDayOfWeek());
+        $this->assertSame(WeekDay::SUN, $date->getWeekDay());
     }
 
     /** @depends testConstruct */
