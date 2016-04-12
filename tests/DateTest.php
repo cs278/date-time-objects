@@ -167,8 +167,7 @@ final class DateTest extends \PHPUnit_Framework_TestCase
     /** @dataProvider dataComparison */
     public function testComparison($expected, Date $a, Date $b)
     {
-        // $result = $a <=> $b;
-        $result = $a == $b ? 0 : ($a > $b ? 1 : -1);
+        $result = ⟷($a, $b);
 
         $this->assertSame($expected, $result);
     }
