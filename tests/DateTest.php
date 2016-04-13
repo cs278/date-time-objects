@@ -300,4 +300,27 @@ final class DateTest extends \PHPUnit_Framework_TestCase
             [1, new Date(3000, 12, 1), new Date(2000, 1, 31)],
         ];
     }
+
+    /**
+     * @dataProvider dataCheck
+     */
+    public function testCheck($expected, $year, $month, $day)
+    {
+        $this->assertSame($expected, Date::check($year, $month, $day));
+    }
+
+    public function dataCheck()
+    {
+        return [
+            [true, 0, 1, 1],
+            [true, 0, 2, 29],
+            [true, 0, 12, 31],
+            [true, 1, 5, 9],
+            [false, -1, 2, 6],
+            [false, -2000, 2, 6],
+            [false, 0, 0, 0],
+            [false, 10000, 1, 2],
+            [false, 10001, 1, 2],
+        ];
+    }
 }

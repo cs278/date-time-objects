@@ -52,15 +52,7 @@ final class Date
         Assert::range($month, 1, 12, 'Month should be between %2$u and %3$u, got: %1$d');
         Assert::range($day, 1, 31, 'Day should be between %2$u and %3$u, got: %1$d');
 
-        if ($year === 0) {
-            // checkdate() does not support the year 0000 which is a leap year
-            // so pretend it's actually 0004.
-            $checkYear = 4;
-        } else {
-            $checkYear = $year;
-        }
-
-        if (!checkdate($month, $day, $checkYear)) {
+        if (!self::check($year, $month, $day)) {
             throw new \InvalidArgumentException(sprintf(
                 'Supplied date, `%04d-%02d-%02d`, is invalid',
                 $year,
@@ -178,6 +170,35 @@ final class Date
     public function __toString()
     {
         return sprintf('%04u-%02u-%02u', $this->year, $this->month, $this->day);
+    }
+
+    /**
+     * Test if the supplied year/month/day represent a date.
+     *
+     * @param  int $year
+     * @param  int $month
+     * @param  int $day
+     *
+     * @return bool
+     */
+    public static function check($year, $month, $day)
+    {
+        Assert::integer($year);
+        Assert::integer($month);
+        Assert::integer($day);
+
+        if ($year === 0) {
+            // checkdate() does not support the year 0000 which is a leap year
+            // so pretend it's actually 0004.
+            $year = 4;
+        }
+
+        if ($year > 9999) {
+            // ISO8601 does not permit years greater than 9999.
+            return false;
+        }
+
+        return checkdate($month, $day, $year);
     }
 
     private function toDateTime()
