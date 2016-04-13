@@ -13,25 +13,51 @@ namespace Cs278\DateTimeObjects;
 
 use Webmozart\Assert\Assert;
 
+/**
+ * Represents the time of day using 24 hour clock.
+ */
 final class Time
 {
     // Properties are used in comparisons, preserve the order of these.
+
+    /** @var int */
     private $hour;
+
+    /** @var int */
     private $minute;
+
+    /** @var int */
     private $second;
+
+    /** @var int */
     private $fraction;
 
+    /**
+     * Constructor.
+     *
+     * @param integer $hour
+     * @param integer $minute
+     * @param integer $second
+     * @param integer $fraction
+     */
     public function __construct($hour = 0, $minute = 0, $second = 0, $fraction = 0)
     {
-        Assert::integer($hour);
-        Assert::integer($minute);
-        Assert::integer($second);
-        Assert::integer($fraction);
+        Assert::integer($hour, 'Hour must be an integer, got: `%1$s`');
+        Assert::integer($minute, 'Minute must be an integer, got: `%1$s`');
+        Assert::integer($second, 'Second must be an integer, got: `%1$s`');
+        Assert::integer($fraction, 'Fraction must be an integer, got: `%1$s`');
 
-        Assert::range($hour, 0, 24);
-        Assert::range($minute, 0, 59);
-        Assert::range($second, 0, 60);
-        Assert::greaterThanEq($fraction, 0);
+        Assert::range($hour, 0, 24, 'Hour must be between %2$u and %3$u, got: %1$d');
+
+        if ($hour === 24) {
+            Assert::eq($minute, 0, 'Minute must equal %2$u, got: %1$d');
+            Assert::eq($second, 0, 'Second must equal %2$u, got: %1$d');
+            Assert::eq($fraction, 0, 'Fraction must equal %2$u, got: %1$d');
+        } else {
+            Assert::range($minute, 0, 59, 'Minute must be between %2$u and %3$u, got: %1$d');
+            Assert::range($second, 0, 60, 'Second must be between %2$u and %3$u, got: %1$d');
+            Assert::greaterThanEq($fraction, 0, 'Fraction must be greater than or equal to %2$u, got: %1$d');
+        }
 
         $this->hour = $hour;
         $this->minute = $minute;
@@ -39,16 +65,33 @@ final class Time
         $this->fraction = $fraction;
     }
 
+    /**
+     * Create an instance representing midnight.
+     *
+     * @return Time
+     */
     public static function createMidnight()
     {
         return new self;
     }
 
+    /**
+     * Create an instance representing the end of a day.
+     *
+     * @return Time
+     */
     public static function createEndOfDay()
     {
-        return new self(23, 59, 59);
+        return new self(24);
     }
 
+    /**
+     * Create a new instance from an ISO8601 time string.
+     *
+     * @param string $iso8601str
+     *
+     * @return Time
+     */
     public static function createFromString($iso8601str)
     {
         Assert::regex($iso8601str,
@@ -110,26 +153,51 @@ final class Time
         return new self($hour, $minute ?: 0, $second ?: 0, $fraction ?: 0);
     }
 
+    /**
+     * Fetch hour component.
+     *
+     * @return int
+     */
     public function getHour()
     {
         return $this->hour;
     }
 
+    /**
+     * Fetch minute component.
+     *
+     * @return int
+     */
     public function getMinute()
     {
         return $this->minute;
     }
 
+    /**
+     * Fetch second component.
+     *
+     * @return int
+     */
     public function getSecond()
     {
         return $this->second;
     }
 
+    /**
+     * Fetch fraction component.
+     *
+     * @return int
+     */
     public function getFraction()
     {
         return $this->fraction;
     }
 
+    /**
+     * Convert to an ISO8601 time string.
+     *
+     * @return string
+     */
     public function __toString()
     {
         return sprintf(
