@@ -154,9 +154,7 @@ final class Time
     }
 
     /**
-     * Fetch hour component.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getHour()
     {
@@ -164,9 +162,7 @@ final class Time
     }
 
     /**
-     * Fetch minute component.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getMinute()
     {
@@ -174,9 +170,7 @@ final class Time
     }
 
     /**
-     * Fetch second component.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getSecond()
     {
@@ -184,9 +178,7 @@ final class Time
     }
 
     /**
-     * Fetch fraction component.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getFraction()
     {

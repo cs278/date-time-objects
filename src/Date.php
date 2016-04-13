@@ -16,7 +16,7 @@ use Webmozart\Assert\Assert;
 /**
  * Represents a date on the gregorian calendar.
  */
-final class Date
+final class Date implements DateInterface
 {
     // Properties are used in comparisons, preserve the order of these.
 
@@ -113,9 +113,7 @@ final class Date
     }
 
     /**
-     * Fetch the year.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getYear()
     {
@@ -123,9 +121,7 @@ final class Date
     }
 
     /**
-     * Fetch the month.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getMonth()
     {
@@ -133,9 +129,7 @@ final class Date
     }
 
     /**
-     * Fetch the day.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getDay()
     {
@@ -143,9 +137,7 @@ final class Date
     }
 
     /**
-     * Fetch the day of the week.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getWeekDay()
     {
@@ -153,9 +145,7 @@ final class Date
     }
 
     /**
-     * Fetch the ordinal position of the day in the year.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getDayOfYear()
     {
