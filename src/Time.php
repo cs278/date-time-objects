@@ -16,7 +16,7 @@ use Webmozart\Assert\Assert;
 /**
  * Represents the time of day using 24 hour clock.
  */
-final class Time
+final class Time implements TimeInterface
 {
     // Properties are used in comparisons, preserve the order of these.
 
@@ -83,6 +83,29 @@ final class Time
     public static function createEndOfDay()
     {
         return new self(24);
+    }
+
+    /**
+     * Construct a new instance from a PHP native DateTime object.
+     *
+     * @param \DateTimeInterface|\DateTime $dt
+     *
+     * @return Time
+     */
+    public static function createFromDateTime($dt)
+    {
+        if (interface_exists('DateTimeInterface')) {
+            Assert::isInstanceOf($dt, 'DateTimeInterface');
+        } else {
+            Assert::isInstanceOf($dt, 'DateTime');
+        }
+
+        return new self(
+            (int) $dt->format('H'),
+            (int) $dt->format('i'),
+            (int) $dt->format('s'),
+            (int) $dt->format('u')
+        );
     }
 
     /**

@@ -14,7 +14,11 @@ namespace Cs278\DateTimeObjects;
 final class TimeOffset
 {
     // @todo Allow comparisons.
+
+    /** @var int */
     private $hour;
+
+    /** @var int */
     private $minute;
 
     public function __construct($hour = 0, $minute = 0)
@@ -23,52 +27,20 @@ final class TimeOffset
         $this->minute = $minute;
     }
 
-    public static function createFromDateTime(\DateTimeInterface $dt)
+    public static function createFromDateTime($dt)
     {
-        return self::createFromString($dt->format('Y-m-d'));
-    }
-
-    public static function createFromString($iso8601str)
-    {
-        preg_match('{^(?<hour>[0-9]{1,2})(?<minute>[0-9]{1,2})?(?<second>[0-9]{1,2})?(?:[,.](?<fraction>[0-9]+))?$}', $iso8601str, $m);
-
-        $hour = (int) $m['hour'];
-        $minute = '' === $m['minute'] ? null : (int) $m['minute'];
-        $second = '' === $m['second'] ? null : (int) $m['second'];
-        $fraction = '' === $m['fraction'] ? null : (int) $m['fraction'];
-
-        unset($m);
-
-        // If minute is unset, seconds should also be unset.
-        assert(null === $minute ? null === $second : true);
-
-        if ($fraction > 0) {
-            $fractionPrecision = strlen($fraction);
-            $fractionFloat = $fraction / pow(10, $fractionPrecision);
-
-            if (null === $minute) {
-                $fractionFloat *= 60;
-
-                $minute = (int) round($fractionFloat, $fractionPrecision);
-
-                $fractionFloat -= $minute;
-            }
-
-            if (null === $second) {
-                $fractionFloat *= 60;
-
-                $second = (int) round($fractionFloat, $fractionPrecision);
-
-                $fractionFloat -= $second;
-
-                // $fraction = $fractionFloat * pow(10, $fractionPrecision);
-                $fraction = 9999;
-
-                // $fraction = (int) (round($fractionFloat, $fractionPrecision) * 10);
-            }
+        if (interface_exists('DateTimeInterface')) {
+            Assert::isInstanceOf($dt, 'DateTimeInterface');
+        } else {
+            Assert::isInstanceOf($dt, 'DateTime');
         }
 
-        return new self($hour, $minute, $second, $fraction);
+        $offset = $dt->getOffset();
+        $hour = (int) floor($offset / 3600);
+        $offset -= $hour * 3600;
+        $minute = (int) floor($offset / 60);
+
+        return new self($hour, $minute);
     }
 
     public function getHour()

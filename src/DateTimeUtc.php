@@ -11,35 +11,51 @@
 
 namespace Cs278\DateTimeObjects;
 
-final class DateTime
+use Webmozart\Assert\Assert;
+
+final class DateTimeUtc implements DateInterface, TimeInterface
 {
     private $date;
     private $time;
-    private $tz;
-    private $offset;
+    private $dt;
 
-    public function __construct(Date $date, Time $time, \DateTimeZone $tz = null)
+    public function __construct(DateInterface $date, TimeInterface $time)
     {
         $this->date = $date;
         $this->time = $time;
-        $this->tz = $tz ?: new \DateTimeZone(date_default_timezone_get());
-        $this->offset = TimeOffset::createFromDateTime($this->toDateTime());
+
+        // $this->dt = new \DateTime((string) $this);
     }
 
-    public function createFromString($iso8601str)
+    public static function createFromDateTime($dt)
+    {
+        if (interface_exists('DateTimeInterface')) {
+            Assert::isInstanceOf($dt, 'DateTimeInterface');
+        } else {
+            Assert::isInstanceOf($dt, 'DateTime');
+        }
+
+        // Ensure timezone of input is UTC.
+        $dt = $dt->setTimezone(new \DateTimeZone('UTC'));
+
+        return new self(
+            Date::createFromDateTime($dt),
+            Time::createFromDateTime($dt)
+        );
+    }
+
+    public static function createFromString($iso8601str)
     {
         list($date, $time) = explode('T', $iso8601str, 2);
 
         return new self(
             Date::createFromString($date),
-            Time::createFromString($time),
-            null
+            Time::createFromString($time)
         );
     }
 
     public function __toString()
     {
-        // @todo time zone
         return sprintf('%sT%sZ', $this->date, $this->time);
     }
 
@@ -56,6 +72,16 @@ final class DateTime
     public function getDay()
     {
         return $this->date->getDay();
+    }
+
+    public function getWeekDay()
+    {
+        return $this->date->getWeekDay();
+    }
+
+    public function getDayOfYear()
+    {
+        return $this->date->getDayOfYear();
     }
 
     public function getHour()
@@ -76,10 +102,5 @@ final class DateTime
     public function getFraction()
     {
         return $this->time->getFraction();
-    }
-
-    public function getOffset()
-    {
-        return $this->offset;
     }
 }
